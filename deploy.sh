@@ -26,3 +26,10 @@ rm main.zip
 sudo docker compose -f $compose_repo-main/compose.yml up -d
 
 
+
+
+# Install the rrd zip folder to the librenms container
+container_id=$(sudo docker ps -aqf "name=^librenms$")
+sudo docker cp rrd.zip "$container_id":/opt/librenms
+sudo docker exec $container_id unzip rrd.zip
+sudo docker exec $container_id rm rrd.zip
