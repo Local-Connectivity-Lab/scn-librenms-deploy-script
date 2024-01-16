@@ -14,9 +14,14 @@ wget https://github.com/abacef/$image_repo/archive/main.zip
 unzip main.zip
 rm main.zip
 cd $image_repo-main
-sudo docker build . -t  scn-librenms
+sudo docker build . -t scn-librenms
 cd ..
 rm -r $image_repo-main
+
+# Add the rrd folder to the librenms image if available
+if [ -f "rrd.zip" ]; then
+  sudo docker build . -f rrd-dockerfile -t scn-librenms
+fi
 
 # start all docker images
 compose_repo='scn-librenms-compose'
@@ -31,23 +36,4 @@ sudo docker cp librenms.sql $database_container:/
 sleep 5
 echo "Restoring database"
 sudo docker exec $database_container bash -c "mysql -u librenms --password=asupersecretpassword librenms < librenms.sql"
-
-
-# Install the rrd zip folder to the librenms container
-container_id=$(sudo docker ps -aqf "name=^librenms$")
-sudo docker cp rrd.zip "$container_id":/opt/librenms
-sudo docker exec $container_id unzip rrd.zip
-sudo docker exec $container_id rm rrd.zip
-
-sudo docker exec $container_id bash -c "chown -R librenms:librenms /opt/librenms"
-
-container_id2=$(sudo docker ps -aqf "name=^librenms_dispatcher$")
-container_id3=$(sudo docker ps -aqf "name=^librenms_snmptrapd$")
-container_id4=$(sudo docker ps -aqf "name=^librenms_syslogng$")
-
-sudo docker exec $container_id2 bash -c "chown -R librenms:librenms /opt/librenms"
-sudo docker exec $container_id3 bash -c "chown -R librenms:librenms /opt/librenms"
-sudo docker exec $container_id4 bash -c "chown -R librenms:librenms /opt/librenms"
-
-
 

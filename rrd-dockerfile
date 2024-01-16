@@ -1,0 +1,6 @@
+from scn-librenms
+ARG rrd_zip="rrd.zip"
+copy $rrd_zip $rrd_zip
+run unzip $rrd_zip
+run rm $rrd_zip
+run chown -R librenms:librenms /opt/librenms
