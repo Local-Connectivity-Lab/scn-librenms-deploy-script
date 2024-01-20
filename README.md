@@ -11,5 +11,7 @@ prereqs for deployment:
 
 There will be 2 folders inside the checkout out repository `scn-librenms-compose` called `db` and `librenms`. These should not be messed with since these are what the containers use for stuff
 
+The UI of the server will be running on port 8000 (http) by default
+
 In the future when we want to back up the rrd folder of a docker install, you need to go into the docker container called `librenms` and everything will be in the rrd folder in the directory it puts you in by default. If you want to back up the database, you need to go into the container called `librenms_db` and do a mysqldump with the user `librenms` with the database librenms and whatever password you set, probably in the environment variables of the compose file of the deployment This means something like `mysqldump librenms -u librenms --password=<your_password> > librenms.sql`
 
