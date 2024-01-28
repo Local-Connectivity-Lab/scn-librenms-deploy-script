@@ -32,19 +32,13 @@ sudo docker compose -f $compose_repo-main/compose.yml up -d
 
 # Restore the database to the database container
 if [ -f "librenms.sql" ]; then
-  echo "restoring database..."
   database_container=$(sudo docker ps -aqf "name=^librenms_db$")
   sudo docker cp librenms.sql $database_container:/
   sleep 5
+  echo "restoring database..."
   sudo docker exec $database_container bash -c "mysql -u librenms --password=asupersecretpassword librenms < librenms.sql && rm librenms.sql"
   echo "done restoring the database"
 else
   echo "Skipped restoring database because no librenms.sql exists"
 fi
-
-echo "Restarting service or else your graphs will not populate for some reason"
-cd $image_repo
-sudo docker compose stop
-sudo docker compose start
-cd ..
 
