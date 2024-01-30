@@ -28,7 +28,12 @@ compose_repo='scn-librenms-compose'
 wget https://github.com/abacef/$compose_repo/archive/main.zip
 unzip main.zip
 rm main.zip
-sudo docker compose -f $compose_repo-main/compose.yml up -d
+install_dir='live_volumes_librenms'
+mv $compose_repo-main $install_dir
+cd $install_dir
+sudo docker compose -f compose.yml up -d
+cd ..
+
 
 # Restore the database to the database container
 if [ -f "librenms.sql" ]; then
