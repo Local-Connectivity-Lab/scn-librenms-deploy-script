@@ -8,15 +8,9 @@ if ! [[ $(which unzip) ]]; then
   echo "unzip is not installed. Please install unzip."
 fi
 
-# build custom librenms docker image
-image_repo='scn-librenms-image'
-wget https://github.com/abacef/$image_repo/archive/main.zip
-unzip main.zip
-rm main.zip
-cd $image_repo-main
+cd librenms_image
 sudo docker build . -t scn-librenms
 cd ..
-rm -r $image_repo-main
 
 # Add the rrd folder to the librenms image if available
 if [ -f "rrd.zip" ]; then
