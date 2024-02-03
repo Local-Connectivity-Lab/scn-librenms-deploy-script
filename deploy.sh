@@ -8,14 +8,20 @@ if ! [[ $(which unzip) ]]; then
   echo "unzip is not installed. Please install unzip."
 fi
 
-cd librenms_image
+mkdir tmp
+cp librenms_image/* tmp
+
+if [ -f "rrd.zip" ]; then
+  tail -n +2 librenms_image_with_rrd/Dockerfile >> tmp/Dockerfile
+  cp rrd.zip tmp
+fi
+
+# Build the custom librenms image
+cd tmp
 sudo docker build . -t scn-librenms
 cd ..
 
-# Add the rrd folder to the librenms image if available
-if [ -f "rrd.zip" ]; then
-  sudo docker build . -f rrd-dockerfile -t scn-librenms
-fi
+rm -r tmp
 
 # start all docker images
 compose_repo='scn-librenms-compose'
@@ -33,7 +39,7 @@ cd ..
 if [ -f "librenms.sql" ]; then
   database_container=$(sudo docker ps -aqf "name=^librenms_db$")
   sudo docker cp librenms.sql $database_container:/
-  sleep 5
+  sleep 10
   echo "restoring database..."
   sudo docker exec $database_container bash -c "mysql -u librenms --password=asupersecretpassword librenms < librenms.sql && rm librenms.sql"
   echo "done restoring the database"

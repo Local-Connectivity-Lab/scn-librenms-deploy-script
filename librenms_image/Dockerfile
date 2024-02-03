@@ -1,5 +1,5 @@
 from librenms/librenms:23.11.0
 
-ARG zip_file='librenms-baicells-rts-configuration.tgz'
-copy $zip_file $zip_file
-run tar xf $zip_file && rm $zip_file
+ARG config_zip='librenms-baicells-rts-configuration.tgz'
+copy $config_zip $config_zip
+run tar xf $config_zip && rm $config_zip
