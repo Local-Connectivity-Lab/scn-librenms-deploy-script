@@ -23,16 +23,26 @@ cd ..
 
 rm -r tmp
 
-# start all docker images
-compose_repo='scn-librenms-compose'
-wget https://github.com/abacef/$compose_repo/archive/main.zip
-unzip main.zip
-rm main.zip
-install_dir='live_volumes_librenms'
-mv $compose_repo-main $install_dir
-cd $install_dir
-sudo docker compose -f compose.yml up -d
-cd ..
+if [ -f "librenms.sql" ]; then
+  
+
+  cd db_image
+  sudo docker build . -t scn_mariadb_librenms
+  cd ..
+fi
+
+sudo docker compose -f compose/compose.yml up -d
+
+## start all docker images
+#compose_repo='scn-librenms-compose'
+#wget https://github.com/abacef/$compose_repo/archive/main.zip
+#unzip main.zip
+#rm main.zip
+#install_dir='live_volumes_librenms'
+#mv $compose_repo-main $install_dir
+#cd $install_dir
+#sudo docker compose -f compose.yml up -d
+#cd ..
 
 
 # Restore the database to the database container
