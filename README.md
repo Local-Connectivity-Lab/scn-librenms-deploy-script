@@ -1,5 +1,5 @@
 Run `./deploy.sh` on the server you want to deploy librenms on. Here is what it does
-- builds a custom librenms docker container. If a "rrd.zip" file exists in the current directory (a backup of the rrd folder on a running install), it will install that onto the docker image
+- builds a custom librenms docker container. If a "rrd.zip" file exists in the current directory (a backup of the rrd folder on a running install), it will copy those files into the volume to be made available by the image
 - executes a custom docker compose script to start the containers necessary for librenms
 - restores the database onto the database container given a file named `librenms.sql` exists in the currently running directory that is a backup of a database using `mysqldump`
 
@@ -7,13 +7,10 @@ If you want to get the rrd files and the database off the current install (10.0.
 
 prereqs for deployment:
 - docker is installed
-- unzip is installed
 
-There will be 2 folders inside the checkout out repository `live-volumes-librenms` called `db` and `librenms`. These should not be messed with since these are what the containers use for stuff
-
-In order for the graphs to show up, you will need to restart the service for some odd reason. This can be done using `docker compose stop` and then `docker compose start` in the live volumes directory
+There will be 2 folders inside the folder `compose` called `db` and `librenms`. These should not be messed with since these are shared docker volumes
 
 The UI of the server will be running on port 8000 (http) by default
 
-In the future when we want to back up the rrd folder of a docker install, you need to go into the docker container called `librenms` and everything will be in the rrd folder in the directory it puts you in by default. If you want to back up the database, you need to go into the container called `librenms_db` and do a mysqldump with the user `librenms` with the database librenms and whatever password you set, probably in the environment variables of the compose file of the deployment This means something like `mysqldump librenms -u librenms --password=<your_password> > librenms.sql`
+In the future when we want to back up the rrd folder of a docker install, you just need to copy the compose/librenms/rrd folder. If you want to back up the database, you need to go into the container called `librenms_db` and do a mysqldump with the user `librenms` with the database librenms and whatever password you set, probably in the environment variables of the compose file of the deployment This means something like `mysqldump librenms -u librenms --password=<your_password> > librenms.sql`
 
