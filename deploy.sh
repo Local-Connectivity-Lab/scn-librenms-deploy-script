@@ -26,8 +26,10 @@ sudo docker compose -f compose/compose.yml up -d
 
 sleep 5
 
-cd compose/librenms
-cp ../../rrd.zip .
-unzip rrd.zip
-rm rrd.zip
+if [ -f "rrd.zip" ]; then
+  cd compose/librenms
+  cp ../../rrd.zip .
+  unzip rrd.zip
+  rm rrd.zip
+fi
 
