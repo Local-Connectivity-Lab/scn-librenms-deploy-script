@@ -31,5 +31,13 @@ if [ -f "rrd.zip" ]; then
   cp ../../rrd.zip .
   unzip rrd.zip
   rm rrd.zip
+  cd ../..
 fi
 
+
+if [ "${REVERSE_PROXY:-0}" -eq 1 ]; then
+  cd reverse_proxy	
+  sudo docker build . -t librenms_reverse_proxy -f Dockerfile-nginx
+  sudo docker run -d -p 80:80 --name librenms_reverse_proxy librenms_reverse_proxy
+  cd ..
+fi
