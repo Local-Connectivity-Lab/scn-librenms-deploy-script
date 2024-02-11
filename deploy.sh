@@ -31,5 +31,6 @@ if [ -f "rrd.zip" ]; then
   cp ../../rrd.zip .
   unzip rrd.zip
   rm rrd.zip
+  cd ../..
 fi
 
