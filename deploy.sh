@@ -2,6 +2,12 @@ set -e
 
 if ! [[ $(which docker) && $(docker --version) ]]; then
   echo "Docker is not installed. Please install docker."
+  exit 1
+fi
+
+if ! [[ $(which unzip) ]]; then
+  echo "unzip is not installed. Please install it"
+  exit 1
 fi
 
 cd librenms_image
