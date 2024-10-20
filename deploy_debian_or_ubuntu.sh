@@ -20,19 +20,13 @@ cd librenms_image
 sudo docker build . -t scn-librenms
 cd ..
 
+touch db_dockerfile
+echo "from  mariadb:10.5" >> db_dockerfile
 if [ -f "librenms.sql" ]; then
-  mkdir tmp
-  cp db_image_with_backup/Dockerfile tmp
-  cp librenms.sql tmp
-  cd tmp
-  sudo docker build . -t scn_mariadb_librenms
-  cd ..
-  rm -r tmp
-else
-  cd db_image
-  sudo docker build . -t scn_mariadb_librenms
-  cd ..
+  echo "copy librenms.sql /docker-entrypoint-initdb.d/" >> db_dockerfile
 fi
+sudo docker build -f db_dockerfile -t scn_mariadb_librenms .
+rm db_dockerfile
 
 sudo docker compose -f compose/compose.yml up -d
 
