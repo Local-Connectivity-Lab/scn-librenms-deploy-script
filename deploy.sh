@@ -32,3 +32,5 @@ if [ -f "rrd.zip" ]; then
 fi
 
 $sudo docker compose -f compose/compose.yml up -d
+
+echo "If the graphs are not populating, there may be issues with the dispatcher container writing the rrd files. You may have to go into the dispatcher container and run `chown -R librenms:librenms /data/rrd/`"
