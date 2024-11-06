@@ -17,18 +17,29 @@ cd ..
 
 touch db_dockerfile
 echo "from  mariadb:10.5" >> db_dockerfile
-if [ -f "librenms.sql" ]; then
+if [ "$1" == "--restore" ]; then
   echo "copy librenms.sql /docker-entrypoint-initdb.d/" >> db_dockerfile
+  ssh othello@10.0.1.12 'sudo mysqldump librenms -u root --password=password > librenms.sql && zip librenms.sql.zip librenms.sql && rm librenms.sql'
+  scp othello@10.0.1.12:/home/othello/librenms.sql.zip .
+  ssh othello@10.0.1.12 'rm /home/othello/librenms.sql.zip'
+  unzip librenms.sql.zip
+  rm librenms.sql.zip
 fi
 $sudo docker build -f db_dockerfile -t scn_mariadb_librenms .
 rm db_dockerfile
 
-if [ -f "rrd.zip" ]; then
+if [ "$1" == "--restore" ]; then
+  rm librenms.sql
+  ssh othello@10.0.1.12 'cd /opt/librenms && sudo zip -r rrd.zip rrd'
+  scp othello@10.0.1.12:/opt/librenms/rrd.zip .
+  ssh othello@10.0.1.12 'sudo rm /opt/librenms/rrd.zip'
+
   cd compose
   mkdir librenms
   cd librenms
   unzip ../../rrd.zip
   cd ../..
+  rm rrd.zip
 fi
 
 $sudo docker compose -f compose/compose.yml up -d
