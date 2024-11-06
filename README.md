@@ -6,7 +6,7 @@ Only tested on debian, ubuntu, and a root install of alpine. Other OS deployment
 1. Install docker compose if it is not installed already
 1. Instal unzip if it is not installed already
 1. Check out this repo
-1. Run `./deploy.sh`
+1. Run `./deploy.sh` (optionally provide the --restore flag to restore the install from the Azure librenms deployment. This requires SSH access to that server.)
    1. builds the librenms image
    1. builds the database image and restores the backup if specified
    1. Starts the service using `docker compose`. This creates 2 shared volumes in the `compose` directory
