@@ -1,25 +1,13 @@
 # Deployment
-## Software requirements
-Only tested on debian, ubuntu, and a root install of alpine. Other OS deployments may not work
-## Steps
-1. Install docker if it is not installed already
-1. Install docker compose if it is not installed already
-1. Instal unzip if it is not installed already
-1. Check out this repo
-1. Run `./deploy.sh` (optionally provide the --restore flag to restore the install from the Azure librenms deployment. This requires SSH access to that server.)
-   1. builds the librenms image
-   1. builds the database image and restores the backup if specified
-   1. Starts the service using `docker compose`. This creates 2 shared volumes in the `compose` directory
-      1. The `librenms` folder is for the librenms docker images to share configuration data including rrd files
-      1. The `db` volume is the database
-   1. Restores the RRD files if specified
+Run the docker compose script: `compose.yml`, but set the `MYSQL_PASSWORD` in the `.env` file to something else 
+
+## Restore
+If you want to restore a previous deployment, you could use one of the daily backups or you could manually run a backup yourself. Put the backed up database `librenms.sql` file in the `db_image` directory, and add the following line `copy librenms.sql /docker-entrypoint-initdb.d/` to the `Dockerfile` inside that directory. Also in order to populate the graphs, you need to create a directory called `librenms` inside the compose directory and unzip the `rrd.zip` file there such chat inside the directory there is a folder named `rrd` and the folder contains folders named after the devices. Once you run docker compose, you will need to give the `librenms_dispatcher` container permissions to the rrd directory by running chown -R librenms:librenms /data/rrd/' inside the container.
 
 The UI will run on port 8000
 
 # Backing up this install
-To back up the install, the commands are in the deployment script. You just need to zip all the RRD files and `mysqldump` the database. Depending on the type of install, you may need to exec into the containers first.
+The backup script to backup the current installation on proxmox is hosted here: https://github.com/abacef/scn-librenms-backup-script
 
 # Upgrading this install
-- I am sure we want to do operating system security updates on a frequent basis to each container so I assume we need to go into each container and run the os's package manager update command every once and a while. We probably need to also do a `docker container restart` after that too
-- I have not tried this but I assume if we want to upgrade the mariadb version, we would need to simply run this deployment script again after changing the mysql version in the corresponding dockerfile in the `FROM` dockerfile command. I think since the database is in a volume outside of docker, the new image will know to use the same volume. We also may need to migrate the database to the new version. I think there is a script to do this `/librenms migrate` or something
-- Upgrading librenms can be done by running `./daily.sh` in the dockerfile. I dont think cron is running on the librenms install, so it wont do it itself. 
+The upgrade script to upgrade the current installation on the proxmox based on this deploy script is hosted here: https://github.com/abacef/scn-librenms-backup-script

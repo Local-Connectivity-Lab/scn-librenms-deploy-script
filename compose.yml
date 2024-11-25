@@ -2,8 +2,8 @@ name: scn-librenms
 
 services:
   db:
-    image: scn_mariadb_librenms
-    container_name: librenms_db
+    build:
+      context: db_image
     command:
       - "mysqld"
       - "--innodb-file-per-table=1"
@@ -28,8 +28,8 @@ services:
     restart: always
 
   librenms:
-    image: scn-librenms:latest
-    container_name: librenms
+    build:
+      context: librenms_image
     hostname: librenms
     cap_add:
       - NET_ADMIN
@@ -57,8 +57,8 @@ services:
     restart: always
 
   dispatcher:
-    image: scn-librenms:latest
-    container_name: librenms_dispatcher
+    build:
+      context: librenms_image
     hostname: librenms-dispatcher
     cap_add:
       - NET_ADMIN
