@@ -19,6 +19,7 @@ services:
       - "MYSQL_USER=${MYSQL_USER}"
       - "MYSQL_PASSWORD=${MYSQL_PASSWORD}"
     restart: always
+    container_name: librenms_db
 
   redis:
     image: redis:5.0-alpine
@@ -55,6 +56,7 @@ services:
       - "DB_PASSWORD=${MYSQL_PASSWORD}"
       - "DB_TIMEOUT=60"
     restart: always
+    container_name: librenms
 
   dispatcher:
     build:
@@ -82,4 +84,5 @@ services:
       - "DISPATCHER_NODE_ID=dispatcher1"
       - "SIDECAR_DISPATCHER=1"
     restart: always
+    container_name: librenms_dispatcher
 
