@@ -1,4 +1,4 @@
-from librenms/librenms:23.11.0
+from librenms/librenms:24.10.1
 
 ARG config_zip='librenms-baicells-rts-configuration.tgz'
 copy $config_zip $config_zip
