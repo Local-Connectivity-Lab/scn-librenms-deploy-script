@@ -1,2 +1,3 @@
-from mariadb:10.5
+from mariadb:11.6.2-noble
+
 
